@@ -37,14 +37,15 @@ class App extends Component {
         sub={this.state.subject.sub}>        
       </Subject>   */}
       <header>
-          <h1><a href = "/" onClick={function(e){
+          <h1><a href = "/" onClick={(e)=>{
             console.log(e);
             e.preventDefault();
-            // this.state.mode ='welcome';
+            //this.state.mode ='welcome';
+           // bind, this, arrow function에 대한 이해가 필요하다.
             this.setState({
               mode:'welcome'
             })           
-          }.bind(this)}>{this.state.subject.title}</a></h1>
+          }}>{this.state.subject.title}</a></h1>
           {this.state.subject.sub}
         </header>
       <TOC data = {this.state.contents}></TOC>
