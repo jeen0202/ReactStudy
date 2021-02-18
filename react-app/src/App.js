@@ -32,22 +32,14 @@ class App extends Component {
     }
     return (
     <div className="App">      
-      {/* <Subject 
+      <Subject 
         title ={this.state.subject.title}
-        sub={this.state.subject.sub}>        
-      </Subject>   */}
-      <header>
-          <h1><a href = "/" onClick={(e)=>{
-            console.log(e);
-            e.preventDefault();
-            //this.state.mode ='welcome';
-           // bind, this, arrow function에 대한 이해가 필요하다.
-            this.setState({
-              mode:'welcome'
-            })           
-          }}>{this.state.subject.title}</a></h1>
-          {this.state.subject.sub}
-        </header>
+        sub={this.state.subject.sub}
+        onChangePage={()=>{
+          this.setState({mode:'welcome'});
+        }}
+        >        
+      </Subject>  
       <TOC data = {this.state.contents}></TOC>
       <Content title = {_title} desc = {_desc}></Content>
     </div>
