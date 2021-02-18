@@ -1,13 +1,17 @@
 import React, {Component} from 'react';
 
 class TOC extends Component{
-    render(){
+    render(){     
+      var lists = [];
+      var data = this.props.data;       
+     data.forEach(data => {
+      lists.push(<li key={data.id}><a href={"/content/"+data.id}>{data.title}</a></li>);
+     });        
+           
       return(
-        <ul>            
-          <li><a href ="1.html">HTML</a></li>
-          <li><a href ="2.html">CSS</a></li>
-          <li><a href ="2.html">JavaScrpit</a></li>
-        </ul>
+        <ul>
+          {lists}
+        </ul>        
       );
     }
   }
