@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 
 class TOC extends Component{
-    render(){     
+    render(){
+      console.log('TOC render');     
       var lists = [];
       var data = this.props.data;       
      data.forEach(data => {
