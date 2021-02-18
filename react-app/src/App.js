@@ -9,15 +9,15 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      mode:'read',
+      mode:'welcome',
+      selected_content_id: 0,
       welcome:{title:"Welcome",desc:"Hello. React!!"},
       subject:{title:"WEB", sub:"World Wide Web"},
       contents:[
         {id:1, title:"HTML", desc:"HTML is for information"},
         {id:2, title:"CSS", desc:"CSS is for design"},
         {id:3, title:"JavaScript", desc:"JavaScript is for interactive"},
-      ],
-      content:{title:"HTML", desc: "HTML is HyperText Markup Language"}
+      ]      
     }
   }
   render(){
@@ -26,9 +26,13 @@ class App extends Component {
     if(this.state.mode === 'welcome'){
       _title = this.state.welcome.title;
       _desc = this.state.welcome.desc;
-    }else if(this.state.mode === 'read'){
-      _title = this.state.contents[0].title;
-      _desc = this.state.contents[0].desc;
+    }else if(this.state.mode === 'read'){     
+      this.state.contents.forEach(element => {        
+        if(element.id === this.state.selected_content_id){          
+          _title = element.title;
+          _desc = element.desc;
+        }
+      });
     }
     return (
     <div className="App">      
@@ -40,7 +44,15 @@ class App extends Component {
         }}
         >        
       </Subject>  
-      <TOC data = {this.state.contents}></TOC>
+      <TOC
+        data = {this.state.contents}
+        onChangeContent={(id)=>{        
+          this.setState({
+            mode:'read',
+            selected_content_id:Number(id)
+            })
+        }}
+      ></TOC>
       <Content title = {_title} desc = {_desc}></Content>
     </div>
     );
