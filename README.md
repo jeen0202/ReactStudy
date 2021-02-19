@@ -1,5 +1,5 @@
 start 2021-02-16
-
+create-react-app을 사용한 실습
 ### React의 기본요소
 Component : Html을 클래스처럼 분리하여 관리 할 수 있게 해준다.
 
