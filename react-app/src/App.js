@@ -43,7 +43,11 @@ class App extends Component {
         var _contents = this.state.contents.concat(
           {id:this.max_content_id,title:_title,desc:_desc}
         )
-        // this.state.contents.push({
+        //성능 개선이 어려운 버전
+        // concat => 복제본을 만들어 수정, push => 원본을 수정
+        // Array.from() method로 원본을 복제하여 수정할 수 있다.
+        // var _content = Array.from(this.state.contents)
+        // _content.push({
         //   id:this.max_content_id,
         //   title:_title,
         //   desc:_desc});
