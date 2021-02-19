@@ -14,9 +14,9 @@ class App extends Component {
     this.max_content_id = 3;
     this.state = {
       mode:'welcome',      
-      selected_content_id: 0,
+      selected_content_id: 1,
       welcome:{title:"Welcome",desc:"Hello. React!!"},
-      subject:{title:"WEB", sub:"World Wide Web"},
+      subject:{title:"WEB", sub:"World Wide Web!"},
       contents:[
         {id:1, title:"HTML", desc:"HTML is for information"},
         {id:2, title:"CSS", desc:"CSS is for design"},
@@ -38,7 +38,7 @@ class App extends Component {
     if(this.state.mode === 'welcome'){
       _title = this.state.welcome.title;
       _desc = this.state.welcome.desc;
-
+      _article = <ReadContent title = {_title} desc={_desc}></ReadContent>
     }else if(this.state.mode === 'read'){     
       var _content =this.getReadContent();
       _article = <ReadContent title = {_content.title} desc = {_content.desc}></ReadContent>
@@ -72,6 +72,22 @@ class App extends Component {
           contents:_contents          
         })
       }}></UpdateContent>
+    }else if(this.state.mode === 'delete'){
+      // var _contents = Array.from(this.state.contents);
+      // if(window.confirm('really?')){
+      //   for(var i = 0; i<_contents.length;i++){
+      //     if(_contents[i].id === this.state.selected_content_id){
+      //       _contents.splice(i,1);
+      //       this.state.selected_content_id--;
+      //       break;
+      //     }
+      //   }
+      // }
+      // this.setState({
+      //   mode:'welcome',
+      //   contents:_contents
+      // });
+      // alert('deleted!');
     }
     return _article;  
   }
@@ -97,7 +113,24 @@ class App extends Component {
             })
         }}
       ></TOC>
-      <Control onChangeMode ={(_mode)=>{        
+      <Control onChangeMode ={(_mode)=>{
+        if(_mode === 'delete'){
+          var _contents = Array.from(this.state.contents);
+          if(window.confirm('really?')){
+            for(var i = 0; i<_contents.length;i++){
+              if(_contents[i].id === this.state.selected_content_id){
+                _contents.splice(i,1);
+                this.state.selected_content_id--;
+                break;
+                }
+              }
+            }
+            this.setState({
+            mode:'welcome',
+            contents:_contents
+          });
+          alert('deleted!');
+          }        
         this.setState({mode:_mode})
         }
       }></Control>
