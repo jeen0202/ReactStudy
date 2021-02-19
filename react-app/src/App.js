@@ -4,6 +4,7 @@ import Subject from "./components/Subject";
 import TOC from "./components/TOC";
 import ReadContent from "./components/ReadContent";
 import CreateContent from "./components/CreateContent";
+import UpdateContent from "./components/UpdateContent";
 import Control from "./components/Control";
 
 class App extends Component {
@@ -23,39 +24,60 @@ class App extends Component {
       ]      
     }
   }
-  render(){
-    console.log('App render');
+  getReadContent(){
+    var data = null;    
+    this.state.contents.forEach(element => {        
+      if(element.id === this.state.selected_content_id){
+        data=element         
+      }      
+    });
+    return data; 
+  }
+  getContent(){
     var _title, _desc, _article = null;
     if(this.state.mode === 'welcome'){
       _title = this.state.welcome.title;
       _desc = this.state.welcome.desc;
+
     }else if(this.state.mode === 'read'){     
-      this.state.contents.forEach(element => {        
-        if(element.id === this.state.selected_content_id){          
-          _title = element.title;
-          _desc = element.desc;
-        }
-        _article = <ReadContent title = {_title} desc = {_desc}></ReadContent>
-      });
+      var _content =this.getReadContent();
+      _article = <ReadContent title = {_content.title} desc = {_content.desc}></ReadContent>
+    
     }else if(this.state.mode === 'create'){
       _article = <CreateContent onCreate={(_title,_desc)=>{
         this.max_content_id += 1;
-        var _contents = this.state.contents.concat(
-          {id:this.max_content_id,title:_title,desc:_desc}
-        )
-        //성능 개선이 어려운 버전
-        // concat => 복제본을 만들어 수정, push => 원본을 수정
-        // Array.from() method로 원본을 복제하여 수정할 수 있다.
-        // var _content = Array.from(this.state.contents)
-        // _content.push({
-        //   id:this.max_content_id,
-        //   title:_title,
-        //   desc:_desc});
+        var _contents = Array.from(this.state.contents)
+        _contents.push({
+          id:this.max_content_id,
+          title:_title,
+          desc:_desc});
         this.setState({
-          contents:_contents
+          contents:_contents,
+          mode:'read',
+          selected_content_id:this.max_content_id
         })
       }}></CreateContent>
+
+    }else if(this.state.mode === 'update'){
+      _content = this.getReadContent();
+      _article = <UpdateContent data = {_content} onUpdate={(_id,_title,_desc)=>{        
+        var _contents = Array.from(this.state.contents);
+        for (var i = 0; i<_contents.length;i++){
+          if(_contents[i].id === _id){
+            _contents[i] = {id:_id,title:_title,desc:_desc}
+            }
+        } 
+        this.setState({
+          mode:'read',
+          contents:_contents          
+        })
+      }}></UpdateContent>
     }
+    return _article;  
+  }
+  render(){
+    console.log('App render');
+  
     return (
     <div className="App">      
       <Subject 
@@ -79,7 +101,7 @@ class App extends Component {
         this.setState({mode:_mode})
         }
       }></Control>
-      {_article}      
+      {this.getContent()}      
     </div>
     );
   }
