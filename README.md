@@ -21,3 +21,6 @@ concat이 유리하다.
 push를 사용하려는 경우 Array.from() 을 사용하여 기존 Array를 복제한후
 비교할 수 있도록 하자.
 
+### AJAX
+
+fetch API : server에 response를 요청하며 비동기식(Asynchronous)으로 응답한다.
