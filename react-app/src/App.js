@@ -16,22 +16,24 @@ class App extends Component {
     this.state = {
       mode:'welcome',      
       selected_content_id: 1,
-      welcome:{title:"Welcome",desc:"Hello. React!!"},
+      welcome:{title:"Welcome",desc:"Hello. React & AJAX!!"},
       subject:{title:"WEB", sub:"World Wide Web!"},
-      contents:[
-        {id:1, title:"HTML", desc:"HTML is for information"},
-        {id:2, title:"CSS", desc:"CSS is for design"},
-        {id:3, title:"JavaScript", desc:"JavaScript is for interactive"},
-      ]      
+      // contents:[
+      //   {id:1, title:"HTML", desc:"HTML is for information"},
+      //   {id:2, title:"CSS", desc:"CSS is for design"},
+      //   {id:3, title:"JavaScript", desc:"JavaScript is for interactive"},
+      // ]            
     }
   }
   getReadContent(){
-    var data = null;    
-    this.state.contents.forEach(element => {        
-      if(element.id === this.state.selected_content_id){
-        data=element         
-      }      
-    });
+    var data = {};
+    data.title = this.state.article.title;
+    data.desc = this.state.article.desc;    
+    // this.state.contents.forEach(element => {        
+    //   if(element.id === this.state.selected_content_id){
+    //     data=element         
+    //   }      
+    // });
     return data; 
   }
   getContent(){
@@ -43,6 +45,7 @@ class App extends Component {
     }else if(this.state.mode === 'read'){     
       var _content =this.getReadContent();
       _article = <ReadContent title = {_content.title} desc = {_content.desc}></ReadContent>
+     // _article = <ReadContent title = {this.state.article.title} desc = {this.state.article.desc}></ReadContent>
     
     }else if(this.state.mode === 'create'){
       _article = <CreateContent onCreate={(_title,_desc)=>{
@@ -92,7 +95,7 @@ class App extends Component {
     }
     return _article;  
   }
-  
+
   render(){
     console.log('App render');
   
@@ -108,12 +111,24 @@ class App extends Component {
       </Subject>  
       <TOC
         data = {this.state.contents}
-        onChangeContent={(id)=>{        
-          this.setState({
-            mode:'read',
-            selected_content_id:Number(id)
+        onChangeContent={(id)=>{  
+          fetch(id+'.json')
+            .then((result)=>{
+              return result.json();
             })
-        }}
+            .then((json)=>{
+              this.setState({
+              mode:'read',
+              article:{
+                title:json.title,
+                desc:json.desc
+              }
+              ,
+              selected_content_id:Number(id)
+              })
+            })
+          }
+        }        
       ></TOC>
       <Control onChangeMode ={(_mode)=>{
         if(_mode === 'delete'){
