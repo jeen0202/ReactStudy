@@ -7,6 +7,7 @@ import ReadContent from "./components/ReadContent";
 import CreateContent from "./components/CreateContent";
 import UpdateContent from "./components/UpdateContent";
 import Control from "./components/Control";
+import NowLoading from "./components/NowLoading";
 
 class App extends Component {
 // 초기화
@@ -16,9 +17,15 @@ class App extends Component {
     this.state = {
       mode:'welcome',      
       selected_content_id: 1,
-      welcome:{title:"Welcome",desc:"Hello. React & AJAX!!"},
+      article:{
+        item:{title:"Welcome",desc:"Hello. React & AJAX!!"},
+        isLoading:false
+      },      
       subject:{title:"WEB", sub:"World Wide Web!"},
-      list:[]
+      list:{
+        items:[],
+        isLoading:false
+      }
       // contents:[
       //   {id:1, title:"HTML", desc:"HTML is for information"},
       //   {id:2, title:"CSS", desc:"CSS is for design"},
@@ -27,18 +34,24 @@ class App extends Component {
     }
   }
   componentDidMount(){
+    //fetch가 시작하기 전에 
+    var newList = Object.assign({}, this.state.list, {isLoading:true});
+    this.setState({list:newList})
     fetch('list.json')
     .then(function(res){
       return res.json();
     })
     .then((json)=>{
-      this.setState({list:json})
+      this.setState({list:{
+        items:json,
+        isLoading:false
+      }})
     })
   }
   getReadContent(){
     var data = {};
-    data.title = this.state.article.title;
-    data.desc = this.state.article.desc;    
+    data.title = this.state.article.item.title;
+    data.desc = this.state.article.item.desc;    
     // this.state.contents.forEach(element => {        
     //   if(element.id === this.state.selected_content_id){
     //     data=element         
@@ -49,8 +62,8 @@ class App extends Component {
   getContent(){
     var _title, _desc, _article = null;
     if(this.state.mode === 'welcome'){
-      _title = this.state.welcome.title;
-      _desc = this.state.welcome.desc;
+      _title = this.state.article.item.title;
+      _desc = this.state.article.item.desc;
       _article = <ReadContent title = {_title} desc={_desc}></ReadContent>
     }else if(this.state.mode === 'read'){     
       var _content =this.getReadContent();
@@ -108,7 +121,41 @@ class App extends Component {
 
   render(){
     console.log('App render');
-  
+    var ArticleTag = null;
+    var TocTag = null;
+    if(this.state.list.isLoading){
+      TocTag = <NowLoading></NowLoading>
+    }else{
+      TocTag = <TOC
+      list ={this.state.list.items} onChangeContent={(id)=>{
+        let newArticle = Object.assign({}, this.state.article, {isLoading:true});
+        this.setState({article:newArticle});
+        fetch(id+'.json')
+          .then((result)=>{
+            return result.json();
+          })
+          .then((json)=>{
+            this.setState({
+            mode:'read',
+            article:{
+              item:{
+              title:json.title,
+              desc:json.desc
+              }
+            }
+            ,
+            selected_content_id:Number(id)
+            })
+          })
+        }
+      }        
+    ></TOC>
+    }
+    if(this.state.article.isLoading){
+     ArticleTag = <NowLoading></NowLoading>
+    }else{
+      ArticleTag = this.getContent();
+    }
     return (
     <div className="App">      
       <Subject 
@@ -119,26 +166,7 @@ class App extends Component {
         }}
         >        
       </Subject>  
-      <TOC
-        list ={this.state.list} onChangeContent={(id)=>{  
-          fetch(id+'.json')
-            .then((result)=>{
-              return result.json();
-            })
-            .then((json)=>{
-              this.setState({
-              mode:'read',
-              article:{
-                title:json.title,
-                desc:json.desc
-              }
-              ,
-              selected_content_id:Number(id)
-              })
-            })
-          }
-        }        
-      ></TOC>
+      {TocTag}
       <Control onChangeMode ={(_mode)=>{
         if(_mode === 'delete'){
           var _contents = Array.from(this.state.contents);
@@ -159,8 +187,8 @@ class App extends Component {
           }        
         this.setState({mode:_mode})
         }
-      }></Control>
-      {this.getContent()}      
+      }></Control>      
+      {ArticleTag}
     </div>
     );
   }
