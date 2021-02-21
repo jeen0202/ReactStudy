@@ -1,18 +1,6 @@
 import React, {Component} from 'react';
 
 class TOC extends Component{
-  state ={
-    list:[]
-  }
-  componentDidMount(){
-    fetch('list.json')
-    .then(function(res){
-      return res.json();
-    })
-    .then((json)=>{
-      this.setState({list:json})
-    })
-  }
   // shouldComponentUpdate(newProps, newState){    
   //   console.log('==> TOC render ShuodComponentUpdate')
   //   if(newProps.data===this.props.data){
@@ -23,7 +11,7 @@ class TOC extends Component{
   render(){
       console.log('TOC render');     
       var lists = [];
-      var data = this.state.list;          
+      var data = this.props.list;          
      data.forEach(data => {
       lists.push(<li key={data.id}><a href={"/content/"+data.id} data-id={data.id} onClick={(e)=>{        
         e.preventDefault();        

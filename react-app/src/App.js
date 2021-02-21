@@ -18,12 +18,22 @@ class App extends Component {
       selected_content_id: 1,
       welcome:{title:"Welcome",desc:"Hello. React & AJAX!!"},
       subject:{title:"WEB", sub:"World Wide Web!"},
+      list:[]
       // contents:[
       //   {id:1, title:"HTML", desc:"HTML is for information"},
       //   {id:2, title:"CSS", desc:"CSS is for design"},
       //   {id:3, title:"JavaScript", desc:"JavaScript is for interactive"},
       // ]            
     }
+  }
+  componentDidMount(){
+    fetch('list.json')
+    .then(function(res){
+      return res.json();
+    })
+    .then((json)=>{
+      this.setState({list:json})
+    })
   }
   getReadContent(){
     var data = {};
@@ -110,8 +120,7 @@ class App extends Component {
         >        
       </Subject>  
       <TOC
-        data = {this.state.contents}
-        onChangeContent={(id)=>{  
+        list ={this.state.list} onChangeContent={(id)=>{  
           fetch(id+'.json')
             .then((result)=>{
               return result.json();
