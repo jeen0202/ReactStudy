@@ -92,6 +92,7 @@ class App extends Component {
     }
     return _article;  
   }
+  
   render(){
     console.log('App render');
   
