@@ -1,5 +1,5 @@
 import './App.css';
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 function App() {
   return (
     <div className="container">
@@ -9,20 +9,21 @@ function App() {
     </div>
   );
 }
+var funcStyle = 'color:blue';
+var funcId = 0;
 function FuncComp(props){
   //hook을 사용한 state 생성 => useState(초기값)
   // 1번째 인자 : state 값,  2번째 인자 : setState 함수
-  // var numberState = useState(props.initNumber);  
-  // var number = numberState[0];
-  // var setNumber = numberState[1];
-  // var dateState = useState((new Date()).toString());
-  // var _date = dateState[0];
-  // var setDate = dateState[1];
-
-  //코드 간소화
   var [number,setNumber] = useState(props.initNumber);
   var [_date,setDate] = useState((new Date()).toString());
-  
+
+  //render의 실행을 감지하여 실행된다.
+  //side effect
+  useEffect(function(){
+    console.log('%cfunc=> useEffect (componentDidMount & componentDidUpdate)'+(++funcId), funcStyle);
+  });
+  console.log('%cfunc=> render ' +(++funcId), funcStyle);
+
   return (
     <div className="container">
         <h2>function style component</h2>
@@ -43,13 +44,20 @@ function FuncComp(props){
     </div>
   );
 }
+var classStyle = 'color:red';
 class ClassComp extends React.Component{
   state ={
     number:this.props.initNumber,
     date : (new Date()).toString()
   }
+  componentWillMount(){
+    console.log('%cclass => componenentWillMount',classStyle )
+  }  
+  componentDidMount(){
+    console.log('%cclass => componenentDidMount',classStyle )
+  }
   render(){
-    console.log("ClassComp Render")
+    console.log("%cclass => render",classStyle);    
     return (
       <div className="container">
         <h2>Class style component</h2>
