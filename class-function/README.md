@@ -15,3 +15,6 @@
 #### (참고)Class style의 life cycle
  그림첨부    
     Hook을 사용하여 Life Cycle을 구현할 때는 React.useEffect()를 사용한다.
+    useEffect() 기본적으로 Class의 componentDidMount() 와 componentDidUpdate()를 합쳐놓은 역할을 한다.
+    useEffect()의 반환함수를 통해 cleanup(component 재실행시 퇴장하면서 수행)을 할 수 있다.
+

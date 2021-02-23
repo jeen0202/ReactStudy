@@ -18,10 +18,17 @@ function FuncComp(props){
   var [_date,setDate] = useState((new Date()).toString());
 
   //render의 실행을 감지하여 실행된다.
-  //side effect
+  //side effect => component와 상관없는 작업이 수행되는것 => 이를 Life Cycle로 구현
+  //
   useEffect(function(){
-    console.log('%cfunc=> useEffect (componentDidMount & componentDidUpdate)'+(++funcId), funcStyle);
+    console.log('%cfunc=> useEffect (componentDidMount & componentDidUpdate)'+(++funcId), funcStyle);    
+    document.title =number + ' : ' + _date;
+    //useEffect의 return 함수는 Life Cycle의 cleanup으로 사용할 수 있다.
+    return function(){
+      console.log('%cfunc=> useEffect return (componentDidMount & componentDidUpdate)'+(++funcId), funcStyle)
+    }
   });
+  //userEffect는 여러개를 동시에 사용 할 수 있다.
   console.log('%cfunc=> render ' +(++funcId), funcStyle);
 
   return (
