@@ -1,5 +1,12 @@
 import './App.css';
 import React, {useState,useEffect} from 'react';
+function useWorkDay(){
+  const [isWorkDay, setIsWorkDay] = useState(null);
+
+  if(new Date().getDay%6 >0)
+    setIsWorkDay(true)
+  return isWorkDay
+}
 function App() {
   var [funcShow, setFuncShow] = useState(true);
   var [classShow, setClassShow] = useState(true);
@@ -19,12 +26,13 @@ function App() {
 }
 var funcStyle = 'color:blue';
 var funcId = 0;
+
 function FuncComp(props){
   //hook을 사용한 state 생성 => useState(초기값)
   // 1번째 인자 : state 값,  2번째 인자 : setState 함수
   var [number,setNumber] = useState(props.initNumber);
   var [_date,setDate] = useState((new Date()).toString());
-
+  var WorkDay = useWorkDay()
   //componentDidMount만 실행되는 useEffect();
   //return 함수는 componetWillUnmount기능을 수행
   useEffect(function(){
@@ -39,8 +47,9 @@ function FuncComp(props){
 
   //side effect => component와 상관없는 작업이 수행되는것 => 이를 Life Cycle로 구현
   useEffect(function(){
-    console.log('%cfunc=> useEffect date (componentDidMount & componentDidUpdate) '+(++funcId), funcStyle);    
-    document.title =_date
+    
+    console.log('%cfunc=> useEffect date (componentDidMount & componentDidUpdate) '+(++funcId), funcStyle);            
+    document.title = WorkDay? "휴일" : "평일";
     return function(){
       console.log('%cfunc=> useEffect date return (componentDidMount & componentDidUpdate) '+(++funcId), funcStyle)
     }  
@@ -76,6 +85,7 @@ function FuncComp(props){
     </div>
   );
 }
+
 var classStyle = 'color:red';
 class ClassComp extends React.Component{
   state ={
