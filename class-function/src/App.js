@@ -1,11 +1,19 @@
 import './App.css';
 import React, {useState,useEffect} from 'react';
 function App() {
+  var [funcShow, setFuncShow] = useState(true);
+  var [classShow, setClassShow] = useState(true);
   return (
     <div className="container">
       <h1>Hello world</h1>
-      <FuncComp initNumber = {2}></FuncComp>
-      <ClassComp initNumber = {2}></ClassComp>
+      <input type = "button" value = "remove func" onClick = {()=>{
+        setFuncShow(false);
+      }}></input>
+      <input type = "button" value = "remove class" onClick = {()=>{
+        setClassShow(false);
+      }}></input>
+      {funcShow ? <FuncComp initNumber = {2}></FuncComp> : null}
+      {classShow ? <ClassComp initNumber = {2}></ClassComp> : null}
     </div>
   );
 }
@@ -17,18 +25,35 @@ function FuncComp(props){
   var [number,setNumber] = useState(props.initNumber);
   var [_date,setDate] = useState((new Date()).toString());
 
-  //render의 실행을 감지하여 실행된다.
-  //side effect => component와 상관없는 작업이 수행되는것 => 이를 Life Cycle로 구현
-  //
+  //componentDidMount만 실행되는 useEffect();
+  //return 함수는 componetWillUnmount기능을 수행
   useEffect(function(){
-    console.log('%cfunc=> useEffect (componentDidMount & componentDidUpdate)'+(++funcId), funcStyle);    
-    document.title =number + ' : ' + _date;
-    //useEffect의 return 함수는 Life Cycle의 cleanup으로 사용할 수 있다.
+    console.log('%cfunc=> useEffect (componentDidMount) '+(++funcId), funcStyle);    
+    document.title = number;
     return function(){
-      console.log('%cfunc=> useEffect return (componentDidMount & componentDidUpdate)'+(++funcId), funcStyle)
-    }
-  });
+      console.log('%cfunc=> useEffect return (componentWilUnmount) '+(++funcId), funcStyle)
+    }  
+  //effect 내에서 감지할 element를 지정하여 변화가 없으면 effect를 생략할 수도 있다.
+  }, []);
+  //render의 실행을 감지하여 실행된다.
+
+  //side effect => component와 상관없는 작업이 수행되는것 => 이를 Life Cycle로 구현
+  useEffect(function(){
+    console.log('%cfunc=> useEffect date (componentDidMount & componentDidUpdate) '+(++funcId), funcStyle);    
+    document.title =_date
+    return function(){
+      console.log('%cfunc=> useEffect date return (componentDidMount & componentDidUpdate) '+(++funcId), funcStyle)
+    }  
+  } , [_date]);
   //userEffect는 여러개를 동시에 사용 할 수 있다.
+  useEffect(function(){
+    console.log('%cfunc=> useEffect number (componentDidMount & componentDidUpdate) '+(++funcId), funcStyle);    
+    document.title = number;
+    return function(){
+      console.log('%cfunc=> useEffect number return (componentDidMount & componentDidUpdate) '+(++funcId), funcStyle)
+    }  
+  } , [number]);
+
   console.log('%cfunc=> render ' +(++funcId), funcStyle);
 
   return (
@@ -62,6 +87,9 @@ class ClassComp extends React.Component{
   }  
   componentDidMount(){
     console.log('%cclass => componenentDidMount',classStyle )
+  }
+  componentWillUnmount(){
+    console.log('%cclass => componenentWillUnMount',classStyle )
   }
   render(){
     console.log("%cclass => render",classStyle);    
